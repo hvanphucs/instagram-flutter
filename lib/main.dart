@@ -4,6 +4,7 @@ import 'package:instagram_flutter/firebase_options.dart';
 import 'package:instagram_flutter/responsive/mobile_screen_layout.dart';
 import 'package:instagram_flutter/responsive/responsive_layout_screen.dart';
 import 'package:instagram_flutter/responsive/web_sreen_layout.dart';
+import 'package:instagram_flutter/screens/home_screen.dart';
 import 'package:instagram_flutter/screens/login_screen.dart';
 import 'package:instagram_flutter/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
       routes: {
         Routes.loginScreen: (context) => const LoginScreen(),
         Routes.signUpScreen: (context) => const SignUpScreen(),
+        Routes.homeScreen: (context) => const HomeScreen(),
       },
     );
   }
