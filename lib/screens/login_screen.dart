@@ -51,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
       showSnackBar(res, context);
     } else {
       Navigator.of(context).pushReplacementNamed(Routes.homeScreen);
+    }
   }
 
   @override

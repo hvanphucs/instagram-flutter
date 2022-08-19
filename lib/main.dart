@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/firebase_options.dart';
@@ -32,11 +33,33 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: mobileBackgroundColor,
       ),
-      // home: const ResponsiveLayout(
-      //   webScreenLayout: WebScreenLayout(),
-      //   mobileScreenLayout: MobileScreenLayout(),
-      // ),
-      home: const LoginScreen(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              break;
+            case ConnectionState.waiting:
+              return const Center(
+                child: CircularProgressIndicator(color: primaryColor),
+              );
+            case ConnectionState.active:
+              if (snapshot.hasData) {
+                return const ResponsiveLayout(
+                    webScreenLayout: WebScreenLayout(),
+                    mobileScreenLayout: MobileScreenLayout());
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('${snapshot.error}'),
+                );
+              }
+              break;
+            case ConnectionState.done:
+              break;
+          }
+          return const LoginScreen();
+        },
+      ),
       routes: {
         Routes.loginScreen: (context) => const LoginScreen(),
         Routes.signUpScreen: (context) => const SignUpScreen(),

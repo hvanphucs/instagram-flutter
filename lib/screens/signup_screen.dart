@@ -70,7 +70,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (res != 'success') {
       //devtools.log(res);
       showSnackBar(res, context);
-    } else {}
+    } else {
+      Navigator.of(context).pushNamed(Routes.loginScreen);
+    }
   }
 
   @override
