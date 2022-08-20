@@ -47,10 +47,12 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = false;
     });
 
+    if (!mounted) return; //fix Do not use BuildContexts across async gaps.
+
     if (res != 'success') {
       showSnackBar(res, context);
     } else {
-      Navigator.of(context).pushReplacementNamed(Routes.homeScreen);
+      //Navigator.of(context).pushReplacementNamed(Routes.homeScreen);
     }
   }
 

@@ -59,7 +59,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       password: _passwordEditingController.text,
       username: _usernameEditingController.text,
       bio: _bioEditingController.text,
-      file: _image,
+      file: _image!,
     );
     setState(() {
       _isLoading = false;

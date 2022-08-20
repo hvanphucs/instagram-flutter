@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_flutter/models/user.dart' as model;
 import 'package:instagram_flutter/providers/user_provider.dart';
+import 'package:instagram_flutter/resources/firestore_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,53 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
+  late final TextEditingController _descriptionEditingController;
+  late bool _isLoading;
+
+  void postImage(
+    String uid,
+    String username,
+    String profImage,
+  ) async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      String res = await FirestoreMethods().uploadPost(
+        _descriptionEditingController.text,
+        _file!,
+        uid,
+        username,
+        profImage,
+      );
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (!mounted) return;
+      if (res != 'success') {
+        showSnackBar(res, context);
+      } else {
+        showSnackBar('Posted!', context);
+      }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+  }
+
+  @override
+  void initState() {
+    _descriptionEditingController = TextEditingController();
+    _isLoading = false;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _descriptionEditingController.dispose();
+    super.dispose();
+  }
 
   void _selectImage(BuildContext context) async {
     return showDialog(
@@ -52,9 +100,22 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   });
                 },
               ),
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Cancel'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+              ),
             ],
           );
         });
+  }
+
+  void _removeImage() {
+    setState(() {
+      _file = null;
+    });
   }
 
   @override
@@ -74,14 +135,20 @@ class _AddPostScreenState extends State<AddPostScreen> {
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
-                onPressed: () {},
+                onPressed: () => _removeImage(),
                 icon: const Icon(Icons.arrow_back),
               ),
               title: const Text('Post to'),
               centerTitle: false,
               actions: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: _isLoading
+                      ? null
+                      : () => postImage(
+                            user.uid,
+                            user.username,
+                            user.photoUrl,
+                          ),
                   child: const Text(
                     'Post',
                     style: TextStyle(
@@ -94,19 +161,23 @@ class _AddPostScreenState extends State<AddPostScreen> {
               ],
             ),
             body: Column(children: [
+              _isLoading
+                  ? const LinearProgressIndicator()
+                  : const Padding(
+                      padding: EdgeInsets.only(top: 0),
+                    ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    backgroundImage: user.photoUrl != null
-                        ? NetworkImage(user.photoUrl!)
-                        : const NetworkImage('user.photoUrl'),
+                    backgroundImage: NetworkImage(user.photoUrl),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.5,
-                    child: const TextField(
-                      decoration: InputDecoration(
+                    child: TextField(
+                      controller: _descriptionEditingController,
+                      decoration: const InputDecoration(
                         hintText: 'Write a caption...',
                         border: InputBorder.none,
                       ),
