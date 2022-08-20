@@ -7,7 +7,6 @@ import 'package:instagram_flutter/resources/auth_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
-import 'dart:developer' as devtools show log;
 
 import '../utils/routes.dart';
 
@@ -66,6 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _isLoading = false;
     });
 
+    if (!mounted) return; //fix Do not use BuildContexts across async gaps.
     if (res != 'success') {
       //devtools.log(res);
       showSnackBar(res, context);

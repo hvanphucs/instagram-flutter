@@ -97,7 +97,7 @@ class AuthMethods {
 
     try {
       if (email.isNotEmpty && password.isNotEmpty) {
-        UserCredential cred = await _auth.signInWithEmailAndPassword(
+        await _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
         );

@@ -1,8 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_flutter/models/user.dart' as model;
+import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({Key? key}) : super(key: key);
@@ -12,68 +15,123 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
+  Uint8List? _file;
+
+  void _selectImage(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: const Text('Create a Post'),
+            children: [
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Take a photo'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Uint8List? file = await pickImage(
+                    ImageSource.camera,
+                  );
+
+                  setState(() {
+                    _file = file;
+                  });
+                },
+              ),
+              SimpleDialogOption(
+                padding: const EdgeInsets.all(20),
+                child: const Text('Choose file from gallaxy'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Uint8List? file = await pickImage(
+                    ImageSource.gallery,
+                  );
+
+                  setState(() {
+                    _file = file;
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: mobileBackgroundColor,
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: const Text('Post to'),
-        centerTitle: false,
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Post',
-              style: TextStyle(
-                color: Colors.blueAccent,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+    final model.User user = Provider.of<UserProvider>(context).getUser;
+
+    return _file == null
+        ? Center(
+            child: IconButton(
+              onPressed: () {
+                _selectImage(context);
+              },
+              icon: const Icon(Icons.upload),
+            ),
+          )
+        : Scaffold(
+            appBar: AppBar(
+              backgroundColor: mobileBackgroundColor,
+              leading: IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.arrow_back),
               ),
-            ),
-          ),
-        ],
-      ),
-      body: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const CircleAvatar(
-              backgroundImage: NetworkImage('url'),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: const TextField(
-                decoration: InputDecoration(
-                  hintText: 'Write a caption...',
-                  border: InputBorder.none,
-                ),
-                maxLines: 8,
-              ),
-            ),
-            SizedBox(
-              height: 45,
-              width: 45,
-              child: AspectRatio(
-                aspectRatio: 487 / 451,
-                child: Container(
-                    decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage('url'),
-                    fit: BoxFit.fill,
-                    alignment: FractionalOffset.topCenter,
+              title: const Text('Post to'),
+              centerTitle: false,
+              actions: [
+                TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Post',
+                    style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                )),
-              ),
+                ),
+              ],
             ),
-            const Divider(),
-          ],
-        )
-      ]),
-    );
+            body: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundImage: user.photoUrl != null
+                        ? NetworkImage(user.photoUrl!)
+                        : const NetworkImage('user.photoUrl'),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: const TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Write a caption...',
+                        border: InputBorder.none,
+                      ),
+                      maxLines: 8,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 45,
+                    width: 45,
+                    child: AspectRatio(
+                      aspectRatio: 487 / 451,
+                      child: Container(
+                          decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: MemoryImage(_file!),
+                          fit: BoxFit.fill,
+                          alignment: FractionalOffset.topCenter,
+                        ),
+                      )),
+                    ),
+                  ),
+                  const Divider(),
+                ],
+              )
+            ]),
+          );
   }
 }
