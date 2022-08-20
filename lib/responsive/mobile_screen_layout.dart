@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_flutter/models/user.dart' as model;
 import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/global_variables.dart';
 import 'package:provider/provider.dart';
 
 class MobileScreenLayout extends StatefulWidget {
@@ -17,7 +18,7 @@ class MobileScreenLayout extends StatefulWidget {
 
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   Map<String, dynamic>? userData;
-  int _page = 0;
+  int _page = 2;
   late final PageController _pageController;
 
   @override
@@ -62,13 +63,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         child: PageView(
           controller: _pageController,
           onPageChanged: onPageChanged,
-          children: const [
-            Text('Feed'),
-            Text('Search'),
-            Text('Add Post'),
-            Text('Notify'),
-            Text('Profile'),
-          ],
+          children: homeScreenItems,
         ),
       ),
       bottomNavigationBar: CupertinoTabBar(
