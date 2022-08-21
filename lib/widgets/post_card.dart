@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:instagram_flutter/models/user.dart' as model;
 import 'package:instagram_flutter/providers/user_provider.dart';
+import 'package:instagram_flutter/resources/firestore_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
 import 'package:instagram_flutter/widgets/like_animation.dart';
@@ -23,6 +25,15 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final model.User user = Provider.of<UserProvider>(context).getUser;
+
+    void likePost() async {
+      await FirestoreMethods().likePost(
+        widget.snap['postId'],
+        user.uid,
+        widget.snap['likes'],
+      );
+    }
+
     return Container(
       color: mobileBackgroundColor,
       padding: const EdgeInsets.symmetric(
@@ -92,6 +103,7 @@ class _PostCardState extends State<PostCard> {
           // Image section
           GestureDetector(
             onDoubleTap: () {
+              likePost();
               setState(() {
                 isLikeAnimation = true;
               });
@@ -122,7 +134,7 @@ class _PostCardState extends State<PostCard> {
                     },
                     child: const Icon(
                       Icons.favorite,
-                      color: Colors.white,
+                      color: Colors.red,
                       size: 100,
                     ),
                   ),
@@ -139,11 +151,15 @@ class _PostCardState extends State<PostCard> {
                 smallLike: true,
                 duration: const Duration(),
                 child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
+                  onPressed: () {
+                    likePost();
+                  },
+                  icon: widget.snap['likes'].contains(user.uid)
+                      ? const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : const Icon(Icons.favorite_border),
                 ),
               ),
               IconButton(
