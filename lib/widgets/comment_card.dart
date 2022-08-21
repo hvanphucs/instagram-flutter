@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
+import 'package:intl/intl.dart';
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({Key? key}) : super(key: key);
+  final snap;
+
+  const CommentCard({Key? key, required this.snap}) : super(key: key);
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -18,8 +21,10 @@ class _CommentCardState extends State<CommentCard> {
       ),
       child: Row(
         children: [
-          const CircleAvatar(
-            backgroundImage: NetworkImage(avatarBlankUrl),
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+              widget.snap['profilePic'],
+            ),
             radius: 18,
           ),
           Expanded(
@@ -30,25 +35,26 @@ class _CommentCardState extends State<CommentCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'username',
-                          style: TextStyle(
+                          text: widget.snap['username'],
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         TextSpan(
-                          text: 'some description here',
+                          text: " ${widget.snap['text']}",
                         ),
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                      '23/12/21',
-                      style: TextStyle(
+                      DateFormat.yMMMd()
+                          .format(widget.snap['datePublished'].toDate()),
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
