@@ -31,10 +31,10 @@ class FirestoreMethods {
         username: username,
         uid: uid,
         postId: postId,
-        datePublished: DateTime.now().toString(),
+        datePublished: DateTime.now(),
         postUrl: photoUrl,
         profImage: profImage,
-        likes: 0,
+        likes: [],
       );
       _firestore.collection('posts').doc(postId).set(
             post.toJson(),
