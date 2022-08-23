@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:instagram_flutter/utils/colors.dart';
 
 class FollowButton extends StatelessWidget {
@@ -28,7 +26,7 @@ class FollowButton extends StatelessWidget {
         onPressed: onPressed,
         child: Container(
           decoration: BoxDecoration(
-            color: mobileBackgroundColor,
+            color: backgroundColor,
             border: Border.all(color: borderColor),
             borderRadius: BorderRadius.circular(5),
           ),

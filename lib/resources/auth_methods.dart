@@ -122,4 +122,8 @@ class AuthMethods {
     devtools.log(res);
     return res;
   }
+
+  Future<void> signOut() async {
+    _auth.signOut();
+  }
 }

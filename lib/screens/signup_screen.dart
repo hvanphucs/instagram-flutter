@@ -51,19 +51,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void signUpUser() async {
-    setState(() {
-      _isLoading = true;
-    });
-    String res = await AuthMethods().signUpUser(
-      email: _emailEditingController.text,
-      password: _passwordEditingController.text,
-      username: _usernameEditingController.text,
-      bio: _bioEditingController.text,
-      file: _image!,
-    );
-    setState(() {
-      _isLoading = false;
-    });
+    String? email = _emailEditingController.text;
+    String? password = _passwordEditingController.text;
+    String? username = _usernameEditingController.text;
+    String? bio = _bioEditingController.text;
+
+    String res = 'Some error occurred when logging!';
+    if (email == '' ||
+        password == '' ||
+        username == '' ||
+        bio == '' ||
+        _image == null) {
+      res = 'Please fill  in all required fields.';
+    } else {
+      setState(() {
+        _isLoading = true;
+      });
+      res = await AuthMethods().signUpUser(
+        email: email,
+        password: password,
+        username: username,
+        bio: bio,
+        file: _image!,
+      );
+      setState(() {
+        _isLoading = false;
+      });
+    }
 
     if (!mounted) return; //fix Do not use BuildContexts across async gaps.
     if (res != 'success') {

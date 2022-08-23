@@ -5,6 +5,9 @@ import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
 
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responsive_layout_screen.dart';
+import '../responsive/web_sreen_layout.dart';
 import '../utils/routes.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -52,7 +55,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (res != 'success') {
       showSnackBar(res, context);
     } else {
-      //Navigator.of(context).pushReplacementNamed(Routes.homeScreen);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),
+            ),
+          ),
+          (route) => false);
     }
   }
 
