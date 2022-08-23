@@ -3,6 +3,8 @@ import 'package:instagram_flutter/screens/add_post_screen.dart';
 import 'package:instagram_flutter/screens/feed_screen.dart';
 import 'package:instagram_flutter/screens/search_screen.dart';
 
+import '../screens/profile_screen.dart';
+
 const webScreenSize = 600;
 const String logoAppSvg = 'assets/ic_instagram.svg';
 const String avatarBlankUrl =
@@ -14,5 +16,5 @@ List<Widget> homeScreenItems = const [
   SearchScreen(),
   AddPostScreen(),
   Text('Notify'),
-  Text('Profile'),
+  ProfileScreen(),
 ];
